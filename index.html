@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Mirror</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: white;
+            background-color: black;
+            text-align: center;
+        }
+        .clock {
+            font-size: 48px;
+            margin-top: 20px;
+        }
+        .weather {
+            font-size: 24px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="clock" id="clock"></div>
+    <div class="weather" id="weather"></div>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}`;
+        }
+        function updateWeather() {
+            fetch('https://api.openweathermap.org/data/2.5/weather?q=Helsinki&appid=956ea1fe21518943f3e9c17c98e48267&units=metric')
+                .then(response => response.json())
+                .then(data => {
+                    const temp = data.main.temp;
+                    const weather = data.weather[0].description;
+                    document.getElementById('weather').textContent = `${temp}°C, ${weather}`;
+                })
+                .catch(error => console.error('Error fetching weather data:', error));
+        }
+        setInterval(updateTime, 1000);
+        updateWeather();
+        setInterval(updateWeather, 600000);
+    </script>
+</body>
+</html>
